@@ -1,0 +1,168 @@
+/* Basic Reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* General Body Styling */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Container Styling */
+.container {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+/* Header Styling */
+h1 {
+    text-align: center;
+    color: #4CAF50;
+    margin-bottom: 20px;
+}
+
+/* Symptoms Summary */
+.symptoms-summary h2 {
+    font-size: 1.5em;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.symptoms-summary ul {
+    padding-left: 20px;
+}
+
+.symptoms-summary ul li {
+    margin-bottom: 8px;
+    font-size: 1.1em;
+}
+
+/* Results Section */
+.results-section h2 {
+    font-size: 1.5em;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.results-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.result-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+}
+
+.disease-name {
+    flex: 1;
+    font-weight: bold;
+}
+
+.probability-bar {
+    height: 20px;
+    background-color: #4CAF50;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+.probability-value {
+    font-weight: bold;
+    color: #333;
+}
+
+/* Advice Section */
+.advice-section h3 {
+    font-size: 1.2em;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.advice-section ul {
+    padding-left: 20px;
+}
+
+.advice-section ul li {
+    margin-bottom: 8px;
+}
+
+/* Disclaimer */
+.disclaimer {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* Back Button */
+.back-btn {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    color: #4CAF50;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.back-btn:hover {
+    text-decoration: underline;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+    .container {
+        width: 90%;
+        padding: 15px;
+    }
+
+    .result-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .probability-bar {
+        width: 100%;
+        margin-right: 0;
+        margin-top: 5px;
+    }
+
+    .probability-value {
+        margin-top: 5px;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 24px;
+    }
+
+    .container {
+        padding: 10px;
+    }
+
+    .result-item {
+        font-size: 0.9em;
+    }
+
+    .probability-bar {
+        height: 15px;
+    }
+}
+
+.button{
+    padding:30px;
+    color:red;
+}
