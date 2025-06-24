@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Check Results</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e8f0f2;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border: 2px solid #00bcd4;
+        }
+        h1, h2, h3 {
+            color: #00796b;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .results-list {
+            list-style: none;
+            padding: 0;
+        }
+        .result-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #80deea;
+            border-radius: 8px;
+            background: #f0f4f8;
+            transition: transform 0.2s;
+        }
+        .result-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+        }
+        .probability-bar {
+            height: 10px;
+            background: #4caf50;
+            border-radius: 5px;
+            transition: width 0.4s ease;
+        }
+        .button-group {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-around;
+        }
+        .button-group a {
+            padding: 12px 18px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .button-group a:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+        .chatbot-popup {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            display: none;
+            width: 300px;
+            z-index: 1000;
+        }
+        #chat-output {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            padding: 5px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+        #chat-input {
+            width: calc(100% - 80px);
+            padding: 10px;
+            margin-right: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        #chat-output p {
+            margin: 5px 0;
+        }
+        strong {
+            color: #00796b;
+        }
+        .disclaimer {
+            text-align: center;
+            font-size: 0.9em;
+            color: #777;
+            margin-top: 20px;
+        }
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .description-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .description-btn:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Health Check Results</h1>
+        <div class="symptoms-summary">
+            <h2>Symptoms You Reported:</h2>
+            <ul>
+                {% for symptom in symptoms %}
+                <li>{{ symptom.replace('_', ' ') }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="results-section">
+            <h2>Possible Conditions to Consider:</h2>
+            <ul class="results-list">
+                {% for disease, probability in predictions.items() %}
+                <li class="result-item">
+                    <span class="disease-name">{{ disease.replace('_', ' ') }}</span>
+                    <div class="probability-bar" style="width: {{ (probability * 100) if probability is not none else 0 }}%;"></div>
+                    <span class="probability-value">{{ "%.1f"|format(probability * 100) if probability is not none else 0 }}%</span>
+                    <button class="description-btn" onclick="showDescription('{{ disease }}')">Check Description</button>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="advice-section">
+            <h3>What to Do Next:</h3>
+            <ul>
+                <li>These results are not a diagnosis.</li>
+                <li>Consult a healthcare professional if symptoms persist.</li>
+            </ul>
+        </div>
+        <p class="disclaimer">
+            This tool provides general information only. It is not a substitute for professional medical advice.
+        </p>
+        <div class="button-group">
+            <a href="/" class="back-btn">Check Again</a>
+            <a href="/download_report?symptoms={{ symptoms | join(',') }}&probabilities={{ predictions | tojson | safe }}&top_diseases={{ predictions.keys() | join(',') }}" class="download-btn">Download Report</a>
+            <a href="#" class="chatbot-btn" onclick="openChatbot()">Chat with Doctor</a>
+        </div>
+    </div>
+
+    <!-- Chatbot Popup -->
+    <div class="chatbot-popup" id="chatbot-popup">
+        <h3>Virtual Doctor Chat</h3>
+        <div id="chat-output"></div>
+        <textarea id="chat-input" placeholder="Describe your symptoms..."></textarea>
+        <button onclick="sendMessage()">Send</button>
+        <button onclick="closeChatbot()">Close</button>
+    </div>
+
+    <!-- Modal for Disease Description -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="disease-title"></h2>
+            <p id="disease-description"></p>
+        </div>
+    </div>
+
+    <script>
+        // Fetching disease description
+        function showDescription(disease) {
+            fetch(`/description/${disease}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("disease-title").innerText = disease.replace('_', ' ');
+                    document.getElementById("disease-description").innerText = data.description;
+                    document.getElementById("myModal").style.display = "block";
+                })
+                .catch(error => {
+                    console.error("Error fetching description:", error);
+                });
+        }
+
+        // Close modal function
+        function closeModal() {
+            document.getElementById("myModal").style.display = "none";
+        }
+
+        // Chatbot functions
+        function openChatbot() {
+            document.getElementById("chatbot-popup").style.display = 'block';
+        }
+
+        function closeChatbot() {
+            document.getElementById("chatbot-popup").style.display = 'none';
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chat-input').value;
+            const chatOutput = document.getElementById('chat-output');
+
+            // Append user message to chat
+            chatOutput.innerHTML += `<p><strong>You:</strong> ${input}</p>`;
+            document.getElementById('chat-input').value = '';
+
+            // Simple chatbot logic for medicine recommendation
+            let response;
+            const userInput = input.toLowerCase();
+
+            if (userInput.includes('fever')) {
+                response = 'For fever, you might consider Paracetamol or Ibuprofen. Please consult a doctor for the right dosage.';
+            } else if (userInput.includes('cough')) {
+                response = 'For a cough, expectorants or lozenges like Strepsils might help. Consult your physician for further advice.';
+            } else if (userInput.includes('cold')) {
+                response = 'For a cold, decongestants and antihistamines like Cetirizine are commonly used. Ensure you seek medical advice before taking any medicine.';
+            } else if (userInput.includes('headache')) {
+                response = 'For headaches, over-the-counter medications like Aspirin or Ibuprofen may help. Consider consulting a healthcare professional if it persists.';
+            } else if (userInput.includes('stomach ache')) {
+                response = 'For stomach aches, antacids or medications like Simethicone can provide relief. If the pain continues, please see a doctor.';
+            } else if (userInput.includes('allergy')) {
+                response = 'For allergies, antihistamines like Loratadine or Cetirizine are effective. Consult a healthcare provider for personalized advice.';
+            } else if (userInput.includes('nausea')) {
+                response = 'For nausea, consider medications like Meclizine or Dimenhydrinate. Always check with a doctor for the best treatment options.';
+            } else if (userInput.includes('fatigue')) {
+                response = 'For fatigue, ensure you are getting adequate rest, hydration, and nutrition. If persistent, consider discussing with a doctor.';
+            } else {
+                response = 'I am unable to determine the appropriate medicine. Please provide more details or consult a doctor.';
+            }
+
+            chatOutput.innerHTML += `<p><strong>Virtual Doctor:</strong> ${response}</p>`;
+        }
+    </script>
+</body>
+</html>

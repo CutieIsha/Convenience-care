@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Error</title>
+    <style>
+        body {
+            background: linear-gradient(to right, #003c71, #1e5d92);
+            color: #f8f9fa;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+            text-align: center;
+        }
+        h1 {
+            color: #F39334;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        .back-btn {
+            display: inline-block;
+            background: #F39334;
+            color: #fff;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 25px;
+            text-decoration: none;
+            text-align: center;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+        .back-btn:hover {
+            background: #d08327;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Appointment Booking Error</h1>
+        <p>Sorry, the selected doctor is currently unavailable for appointments. Please choose another doctor.</p>
+        <a href="/consult_doctor" class="back-btn">Back to Doctor List</a>
+    </div>
+</body>
+</html>
